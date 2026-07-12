@@ -67,12 +67,22 @@ fun DashboardScreen(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedCategoryFilter by viewModel.selectedCategoryFilter.collectAsStateWithLifecycle()
 
+    // Auth States
+    val username by viewModel.username.collectAsStateWithLifecycle()
+    val avatarIndex by viewModel.avatarIndex.collectAsStateWithLifecycle()
+    val currencySymbol by viewModel.currencySymbol.collectAsStateWithLifecycle()
+
+    val avatarEmojis = remember { listOf("🦊", "🐼", "🐱", "🐨", "🦁", "🐷", "🦄", "🦖") }
+    val avatarColors = remember { listOf(BentoLavender, BentoBlue, BentoPink, BentoLavender, BentoBlue, BentoPink, BentoLavender, BentoBlue) }
+    val userAvatar = avatarEmojis.getOrElse(avatarIndex) { "🦊" }
+    val userAvatarBg = avatarColors.getOrElse(avatarIndex) { BentoLavender }
+
     var showAddTransactionDialog by remember { mutableStateOf(false) }
     var showAddRecurringDialog by remember { mutableStateOf(false) }
     var showSetBudgetDialog by remember { mutableStateOf(false) }
     var activeTab by remember { mutableStateOf(0) } // 0: Transactions, 1: Budgets, 2: Reports, 3: Recurring
 
-    val currencyFormat = remember { DecimalFormat("$#,##0.00") }
+    val currencyFormat = remember(currencySymbol) { DecimalFormat("${currencySymbol}#,##0.00") }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -117,7 +127,7 @@ fun DashboardScreen(
                 .padding(paddingValues)
                 .statusBarsPadding()
         ) {
-            // App Bar Title
+            // Personalized Profile App Bar Title
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,41 +138,67 @@ fun DashboardScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(userAvatarBg),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Payments,
-                            contentDescription = "Coinzy Logo",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
+                        Text(
+                            text = userAvatar,
+                            fontSize = 22.sp
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Coinzy",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 0.5.sp
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Column {
+                        Text(
+                            text = "Hi, $username!",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Black,
+                                letterSpacing = (-0.3).sp
+                            ),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "Coinzy Bento Wallet",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
 
-                IconButton(
-                    onClick = { showSetBudgetDialog = true },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-                    ),
-                    modifier = Modifier.size(40.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Configure Budgets",
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
+                    IconButton(
+                        onClick = { showSetBudgetDialog = true },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                        ),
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Configure Budgets",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { viewModel.logoutUser() },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
+                        ),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .testTag("logout_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             }
 

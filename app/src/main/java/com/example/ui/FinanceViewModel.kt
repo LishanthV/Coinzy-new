@@ -3,6 +3,7 @@ package com.example.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.data.AuthManager
 import com.example.data.database.BudgetEntity
 import com.example.data.database.RecurringTransactionEntity
 import com.example.data.database.TransactionEntity
@@ -15,7 +16,49 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class FinanceViewModel(private val repository: FinanceRepository) : ViewModel() {
+class FinanceViewModel(private val repository: FinanceRepository, val authManager: AuthManager) : ViewModel() {
+
+    // Auth States
+    val isLoggedIn = MutableStateFlow(authManager.isLoggedIn)
+    val isRegistered = MutableStateFlow(authManager.isRegistered)
+    val username = MutableStateFlow(authManager.username)
+    val email = MutableStateFlow(authManager.email)
+    val avatarIndex = MutableStateFlow(authManager.avatarIndex)
+    val currencySymbol = MutableStateFlow(authManager.currency)
+
+    fun registerUser(name: String, emailAddr: String, passwordRaw: String, avatarIdx: Int, curr: String): Boolean {
+        val success = authManager.register(name, emailAddr, passwordRaw, avatarIdx, curr)
+        if (success) {
+            isLoggedIn.value = authManager.isLoggedIn
+            isRegistered.value = authManager.isRegistered
+            username.value = authManager.username
+            email.value = authManager.email
+            avatarIndex.value = authManager.avatarIndex
+            currencySymbol.value = authManager.currency
+        }
+        return success
+    }
+
+    fun loginUser(passwordRaw: String): Boolean {
+        val success = authManager.login(passwordRaw)
+        if (success) {
+            isLoggedIn.value = authManager.isLoggedIn
+        }
+        return success
+    }
+
+    fun logoutUser() {
+        authManager.logout()
+        isLoggedIn.value = false
+    }
+
+    fun updateProfile(name: String, emailAddr: String, avatarIdx: Int, curr: String) {
+        authManager.updateProfile(name, emailAddr, avatarIdx, curr)
+        username.value = authManager.username
+        email.value = authManager.email
+        avatarIndex.value = authManager.avatarIndex
+        currencySymbol.value = authManager.currency
+    }
 
     // Initialize with sample data if first run & run scheduled sync
     init {
@@ -356,11 +399,11 @@ data class PeriodSummary(
     val categoryBreakdown: Map<String, Double> = emptyMap()
 )
 
-class FinanceViewModelFactory(private val repository: FinanceRepository) : ViewModelProvider.Factory {
+class FinanceViewModelFactory(private val repository: FinanceRepository, private val authManager: AuthManager) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FinanceViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return FinanceViewModel(repository) as T
+            return FinanceViewModel(repository, authManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
