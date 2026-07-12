@@ -1,0 +1,6 @@
+{
+  "name": "Coinzy",
+  "description": "Manage your payments, track spendings, set budget limits, and gain clear insights into your finances.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

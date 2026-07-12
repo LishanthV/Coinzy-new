@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Outer gold glowing/accent ring -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,18c-19.88,0-36,16.12-36,36s16.12,36,36,36s36-16.12,36-36S73.88,18,54,18z M54,82c-15.46,0-28-12.54-28-28s12.54-28,28-28s28,12.54,28,28S69.46,82,54,82z" />
+        
+    <!-- Golden Coin Inner details -->
+    <path
+        android:fillColor="#FFC700"
+        android:pathData="M54,24c-16.57,0-30,13.43-30,30s13.43,30,30,30s30-13.43,30-30S70.57,24,54,24z M54,78c-13.23,0-24-10.77-24-24s10.77-24,24-24s24,10.77,24,24S67.23,78,54,78z" />
+
+    <!-- Sleek Coinzy C Logo centered at (54, 54) inside safe-zone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M63,42.5c-1.2-1.9-3.1-3.4-5.3-4.2c-2.2-0.8-4.7-0.9-7-0.1c-3.1,1.1-5.6,3.6-6.7,6.7c-1.5,4.3-0.7,9.1,2.1,12.7c2.8,3.6,7.4,5.4,12,4.6c2.5-0.4,4.8-1.7,6.4-3.7l4,4c-2.4,3-5.9,4.9-9.7,5.5c-1.4,0.2-2.8,0.3-4.2,0.3c-5.7,0-11.1-2.9-14.1-7.7c-3-4.8-3.4-10.8-1-16c2-4.3,5.8-7.6,10.4-9.2c3.5-1.2,7.3-1.4,10.9-0.5c3.2,0.8,6,2.6,8.1,5.2L63,42.5z" />
+</vector>
